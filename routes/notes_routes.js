@@ -1,15 +1,15 @@
 import express from "express"
-import { getAllNotes,getNote,createNewNote,deleteOldNote,updateOldNote } from "../controllers/notes_controller.js"
+import NotesController from "../controllers/notes_controller.js"
 
 const notesRouter = express.Router()
 
 notesRouter.route("/")
-    .get(getAllNotes)
-    .post(createNewNote)
+    .get(NotesController.getAllNotes)
+    .post(NotesController.createNewNote)
 
 notesRouter.route("/:note_id")
-    .put(updateOldNote)
-    .delete(deleteOldNote)
-    .get(getNote)
+    .put(NotesController.updateOldNote)
+    .delete(NotesController.deleteOldNote)
+    .get(NotesController.getNote)
 
 export default notesRouter

@@ -1,114 +1,87 @@
-import notes from "../db/notes_db.js";
+import Note from "../models/note.js"
 
-export const fetchAllNotes = () =>{
-    return notes
-}
+class NoteService{
 
-export const fetchNote = (noteId) =>{
-    if(!noteId){
-        throw new Error("Note id is required.")
+    fetchAllNotes = async() =>{
+        const allNotes = await Note.find()
+        return allNotes 
     }
 
-    const parsedId = Number(noteId)
-
-    if(Number.isNaN(parsedId)){
-        throw new Error("Invalid note Id");
-    }
-
-    const requiredNote = notes.find(requiredNote = requiredNote.id === parsedId)
-
-    if(!requiredNote){
-        throw new Error("Note does not exist.")
-    }
-
-    return requiredNote
-}
-
-export const createNote = (data) =>{
-
-    if(!data && typeof data !== "object"){
-        throw new Error("Request Body is missing")
-    }
-
-    const {title, content, author} = data
-
-    if(!title && typeof title !== "string"){
-        throw new Error("Title is a strong requirement and should be of type string")
-    }
-
-    if(!content && typeof content !== "string"){
-        throw new Error("content is a strong requirement and should be of thype string")
-    }
-
-    if(!author && typeof author !== "string"){
-        throw new Error("Autor is a strong requirement and it shoul be of type string")
-    }
-
-    const createdNote = {
-        id: Date.now(),
-        title: title.trim(),
-        content: content.trim(),
-        author: author.trim()
-    }
-
-    const updatedNote = notes.push(createdNote)
-
-    return updatedNote
-
-}
-
-export const deleteNote = (noteId) =>{
-
-    if(!noteId){
-        throw new Error("note id is a strong requirement of a note you may want to delete")
-    }
-
-    const parsedId = Number(noteId)
+    fetchNote = async (noteId) =>{
+        if(!noteId){
+            throw new Error("Note id is required.")
+        }
     
-    if(Number.isNaN(parsedId)){
-        throw new Error("Invalid Id")
+        const note = await Note.findById(noteId)
+
+        if(!note){
+            throw new Error("Note does not exist.")
+        }
+
+        return note
     }
 
-    const noteIndex = notes.findIndex(requiredNote => requiredNote.id === parsedId)
-//why are we restricting it to -1
-    if(noteIndex === -1){
-        throw new Error("note not found")
+    createNote = async (data) =>{
+
+        if(!data || typeof data !== "object"){
+            throw new Error("Request Body is missing")
+        }
+
+        const {title, content, author,category, tags, isFavorite, isPinned} = data
+
+        if(!title ||!author){
+            throw new Error("missing dome fields")
+        }
+
+        const createdNote = new Note({
+            title: title.trim(),
+            content: content ? content.trim() : "",
+            author: author.trim(),
+            category: category,
+            tags: tags
+        })
+
+        const result = await createdNote.save()
+
+        return result
     }
 
-    const newNotes = notes.pop(notes[noteIndex])
+    deleteNote = async (noteId) =>{
 
-    return newNotes
-    
+        if(!noteId){
+            throw new Error("note id is a strong requirement of a note you may want to delete")
+        }
+
+        const noteToDelete = await Note.findByIdAndDelete(noteId)
+
+        if(!noteToDelete) throw new Error("Note not found")
+
+        return {
+        message: "Note deleted successfully"
+        } 
+    }
+
+    updateNote = async (noteId, data) =>{
+
+        if(!noteId){
+            throw new Error("Note id is a required field")
+        }
+
+        if(!data || typeof data !== "object"){
+            throw new Error("update data is required")
+        }
+
+        const updatedNote = await Note.findByIdAndUpdate(
+            noteId, 
+            { $set: data },
+            { new: true, runValidators: true }
+        )
+
+        if(!updatedNote) throw new Error("Note not found")
+
+        return updatedNote    
+    }
+
 }
 
-export const updateNote = (noteId, data) =>{
-
-    if(!noteId){
-        throw new Error("Note id is a required field")
-    }
-
-    const parsedId = Number(noteId)
-
-    const noteIndex = notes.findIndex(requiredNote => requiredNote.id === parsedId)
-
-    if(noteIndex === -1){
-        throw new Error("note not found")
-    }
-
-    const {title, content} = data
-
-    const existingTitle = notes.find(noteId).title
-    const existingContent = notes.find(noteId).content
-
-    existingTitle = title
-    existingContent = content
-
-    const updatedNote = {
-        id: Date.now(),
-        title:existingTitle.trim(),
-        content: existingContent.trim(),
-        author: author.trim()
-    }
-
-    return notes
-}
+export default new NoteService
