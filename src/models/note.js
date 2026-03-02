@@ -19,7 +19,7 @@ const noteSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ["work", "personal"],
+        enum: ["work", "personal","study"],
         default: "personal",
     },
     tags: {
