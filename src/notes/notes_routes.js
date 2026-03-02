@@ -10,8 +10,8 @@ notesRouter.route("/")
     .post(validate(createNoteSchema), NotesController.createNewNote)
 
 notesRouter.route("/:note_id")
-    .put(validate(mongoIdSchema), validate(updateNoteSchema), NotesController.updateOldNote)
-    .delete(validate(mongoIdSchema), NotesController.deleteOldNote)
-    .get(validate(mongoIdSchema), NotesController.getNote)
+    .put(validate(mongoIdSchema, 'params'), validate(updateNoteSchema), NotesController.updateOldNote)
+    .get(validate(mongoIdSchema, 'params'), NotesController.getNote)
+    .delete(validate(mongoIdSchema, 'params'), NotesController.deleteOldNote)
 
 export default notesRouter

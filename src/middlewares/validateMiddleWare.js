@@ -45,7 +45,7 @@ const validate = (schema, source = "body") => {
             // Perform schema validation
             schema.parse(req[source]);
 
-            // Continue to next middleware/controller if validation passes
+            // Contine to next middleware/controller if validation passes
             next();
         } catch (error) {
             /**
