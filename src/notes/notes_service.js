@@ -20,8 +20,7 @@ class NoteService{
     }
 
     createNote = async (data) =>{
-        const {title, content, author,category, tags, isFavorite, isPinned} = data
-
+    
         //spreadOprator
         const createdNote = new Note({...data})
 

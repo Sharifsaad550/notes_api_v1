@@ -5,7 +5,6 @@ export const createNoteSchema = z.object({
         .min(3, "title must be atleast 3 charcters long")
         .max(100, "Title is too long"),
     content:  z.string().optional(),
-    author: z.string(),
     category: z.enum(["work", "personal","study"]).default("personal"),
     tags: z.array([z.string]).optional(),
     isFavorite: z.boolean().optional(),

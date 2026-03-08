@@ -14,8 +14,9 @@ const noteSchema = new mongoose.Schema({
         default: ""
     },
     author: {
-        type: String,
-        required: true
+        type: mongoose.Schema.ObjectId,
+        ref: 'Author',
+        required: [true, "Note must belong to an author"]
     },
     category: {
         type: String,
