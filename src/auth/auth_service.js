@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken.js"
+import jwt from "jsonwebtoken"
 import Author from "../models/author.js"
 import AppError from "../utils/AppError.js"
 
