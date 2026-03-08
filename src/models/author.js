@@ -24,11 +24,10 @@ authorSchema.pre("save", async function (next) {
     if(!this.isModified('password')) return next()
     const hashPassword = await bcrypt.hash(this.password, 10)
     this.password = hashPassword
-    next()
 })
 
-authorSchema.methods.comparePassword = async function (hashedPassword, userPassword) {
-    return await bcrypt.compare(userPassword, hashedPassword)
+authorSchema.methods.comparePassword = async function (userPassword) {
+    return await bcrypt.compare(userPassword, this.password)
 }
 
 const Author = mongoose.model("Author", authorSchema)

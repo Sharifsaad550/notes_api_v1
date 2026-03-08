@@ -1,68 +1,37 @@
-// const validate = (schema) => (req, res, next) =>{
-//     try {
-//         schema.parse(req.body)
-//         next()
-//     } catch (error) {
-
-//         const errorMessage = error.
-//             errors.map(err => `${err.path.
-//             join(".")}: ${err.message}`)
-//             .join(",")
-//         next(new AppError(error.message, 400))
-//     }
-// }
-
-// export default validate
-
-import AppError from "../utils/AppError.js";
+import AppError from '../utils/AppError.js';
 
 /**
- * Validation Middleware Factory
- *
- * This function generates an Express middleware that validates
- * incoming request data against a provided schema (e.g., Zod schema).
- *
- * Architectural Purpose:
- * -----------------------
- * - Enforces input validation at the routing layer
- * - Prevents invalid data from reaching business logic
- * - Standardizes client error responses (400 Bad Request)
- * - Integrates with global error handling system
- *
- * Execution Flow:
- * ----------------
- * 1. Schema validates req.body
- * 2. If valid → next() is called
- * 3. If invalid → structured error messages are extracted
- * 4. AppError is thrown and passed to global error handler
- *
- * @param {Object} schema - Validation schema (e.g., Zod schema)
- * @returns {Function} Express middleware
+ * Validation middleware factory.
+ * Intercepts Zod errors and ensures they are perfectly formatted 
+ * and user-friendly before sending them to the client.
  */
-const validate = (schema, source = "body") => {
-    return (req, res, next) => {
-        try {
-            // Perform schema validation
-            schema.parse(req[source]);
+const validate = (schema, source = 'body') => (req, res, next) => {
+    try {
+        schema.parse(req[source]);
+        next();
+    } catch (error) {
+        // Ensure we are dealing with a Zod error object
+        if (error.issues && error.issues.length > 0) {
+            const firstError = error.errors[0];
+            
+            // Get the name of the field that failed (e.g., 'username', 'email')
+            const fieldName = firstError.path.join('.'); 
+            
+            let cleanMessage = firstError.message;
 
-            // Contine to next middleware/controller if validation passes
-            next();
-        } catch (error) {
-            /**
-             * Zod provides structured validation errors in error.errors array.
-             * Each error object contains:
-             * - path: array showing where the error occurred
-             * - message: explanation of the validation failure
-             */
+            // Intercept Zod's technical error for missing fields
+            if (firstError.code === 'invalid_type' && firstError.received === 'undefined') {
+                // Capitalize the field name for a polished look (e.g., "Username")
+                const formattedField = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+                cleanMessage = `${formattedField} is required`;
+            }
 
-            const formattedMessage = error.errors
-                .map(err => `${err.path.join(".")}: ${err.message}`)
-                .join(", ");
-
-            // Forward validation error as operational error
-            next(new AppError(formattedMessage, 400));
+            return next(new AppError(cleanMessage, 400));
         }
-    };
+
+        // Fallback for any unknown validation errors
+        next(new AppError("Invalid input data", 400));
+    }
 };
 
 export default validate;

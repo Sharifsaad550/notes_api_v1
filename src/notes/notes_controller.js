@@ -4,7 +4,8 @@ import catchAsync from "../utils/catchAsync.js"
 class NotesController{
 
     getAllNotes = catchAsync(async (req, res ,next) =>{
-        const data = await NoteService.fetchAllNotes()
+        const userId = req.user._id 
+        const data = await NoteService.fetchAllNotes(userId)
 
         res.status(200).json({
             status:"success",
@@ -13,8 +14,9 @@ class NotesController{
     })
 
     getNote = catchAsync(async(req, res, next) =>{
+        userId = req.user._id
         const noteId = req.params.note_id
-        const data = await NoteService.fetchNote(noteId)
+        const data = await NoteService.fetchNote(noteId,userId)
 
         res.status(200).json({
             status:"success",
@@ -24,7 +26,9 @@ class NotesController{
 
     createNewNote = catchAsync(async(req, res, next) =>{
         const requestBody = req.body
-        const data =await NoteService.createNote(requestBody)
+        userId = req.user._id
+        
+        const data =await NoteService.createNote(requestBody, userId)
         
         res.status(201).json({
             status: "success",
@@ -35,7 +39,8 @@ class NotesController{
     updateOldNote = catchAsync(async(req, res, next)=>{
         const noteId = req.params.note_id
         const updatedData = req.body
-        const data =await NoteService.updateNote(noteId, updatedData)
+        userId = req.user._id
+        const data =await NoteService.updateNote(noteId, updatedData, userId)
 
         res.status(200).json({
             status: "success",
@@ -45,7 +50,8 @@ class NotesController{
 
     deleteOldNote = catchAsync(async(req, res, next) =>{
         const noteId = req.params.note_id
-        const data =await NoteService.deleteNote(noteId)
+        userId = req.user._id
+        const data =await NoteService.deleteNote(noteId, userId)
 
         res.status(204).json({
             status:"deleted",
