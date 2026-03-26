@@ -5,6 +5,8 @@ import { loginSchema, signupSchema } from "../validators/authValidatoro.js";
 
 const authRouter = express.Router()
 
+// authRouter.post('/', validate(signupSchema), AuthController.signUp)
+// authRouter.post('/', validate(loginSchema), AuthController.loginUser)
 authRouter.post('/signup', validate(signupSchema), AuthController.signUp)
 authRouter.post('/login', validate(loginSchema), AuthController.loginUser)
 

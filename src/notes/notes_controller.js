@@ -14,7 +14,7 @@ class NotesController{
     })
 
     getNote = catchAsync(async(req, res, next) =>{
-        userId = req.user._id
+        const userId = req.user._id
         const noteId = req.params.note_id
         const data = await NoteService.fetchNote(noteId,userId)
 
@@ -26,7 +26,7 @@ class NotesController{
 
     createNewNote = catchAsync(async(req, res, next) =>{
         const requestBody = req.body
-        userId = req.user._id
+        const userId = req.user._id
         
         const data =await NoteService.createNote(requestBody, userId)
         
@@ -39,7 +39,7 @@ class NotesController{
     updateOldNote = catchAsync(async(req, res, next)=>{
         const noteId = req.params.note_id
         const updatedData = req.body
-        userId = req.user._id
+        const userId = req.user._id
         const data =await NoteService.updateNote(noteId, updatedData, userId)
 
         res.status(200).json({
@@ -50,7 +50,7 @@ class NotesController{
 
     deleteOldNote = catchAsync(async(req, res, next) =>{
         const noteId = req.params.note_id
-        userId = req.user._id
+        const userId = req.user._id
         const data =await NoteService.deleteNote(noteId, userId)
 
         res.status(204).json({

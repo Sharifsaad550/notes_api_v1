@@ -12,7 +12,7 @@ const validate = (schema, source = 'body') => (req, res, next) => {
     } catch (error) {
         // Ensure we are dealing with a Zod error object
         if (error.issues && error.issues.length > 0) {
-            const firstError = error.errors[0];
+            const firstError = error.issues[0];
             
             // Get the name of the field that failed (e.g., 'username', 'email')
             const fieldName = firstError.path.join('.'); 

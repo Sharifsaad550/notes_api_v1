@@ -13,7 +13,9 @@ const port = process.env.PORT
 app.use(express.json())
 
 app.use("/api/notes", notesRouter)
-app.use("/api/signup", authRouter)
+// app.use("/api/signup", authRouter)
+// app.use("/api/login", authRouter)
+app.use("/api/auth", authRouter)
 
 app.use(notFoundMiddleWare)
 /*or

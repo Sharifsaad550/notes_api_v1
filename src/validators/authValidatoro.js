@@ -14,7 +14,7 @@ export const signupSchema= z.object({
     })
         .email("invalid email format"),
 
-    passwor: z.string({
+    password: z.string({
         required_error:"Password is required",
         invalid_type_error:"Password must be a text"
     })
@@ -29,5 +29,5 @@ export const loginSchema = z.object({
         .email("Enter email address"),
 
     password: z.string()
-        .min("password is required")
+        .min(1, "password is required")
 })

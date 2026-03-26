@@ -22,8 +22,16 @@ class NoteService{
             throw new AppError("You have no permission to this note", 403)
         }
 
-        return note
-    }
+        // if (!note) {
+        //     throw new AppError("Note not found", 404);
+        // }
+
+        // if (note.author.toString() !== userId.toString()) {
+        //     throw new AppError("You have no permission to this note", 403);
+        // }
+
+            return note
+        }
 
     createNote = async (data, userId) =>{
     
@@ -37,7 +45,7 @@ class NoteService{
 
     deleteNote = async (noteId, userId) =>{
 
-        //const note = await Note.findById(noteId)   
+        const note = await Note.findById(noteId)   
 
         const noteToDelete = await Note.findByIdAndDelete(noteId)
 
@@ -65,7 +73,7 @@ class NoteService{
         const updatedNote = await Note.findByIdAndUpdate(
             noteId, 
             { $set: data },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         )
 
         // if(!updatedNote) throw new AppError("Note not found", 404)
