@@ -12,23 +12,13 @@ class NoteService{
      
         const note = await Note.findById(noteId)
 
-        //const note = await Note.findOne({_id:noteId, author:userId})       
-
-        if(note.author.toString() !== userId.toString()){
-            throw new AppError("Note does not exist.", 404)
+        if (!note) {
+            throw new AppError("Note not found", 404);
         }
 
-        if(note.author !== userId){
-            throw new AppError("You have no permission to this note", 403)
+        if (note.author.toString() !== userId.toString()) {
+            throw new AppError("You have no permission to this note", 403);
         }
-
-        // if (!note) {
-        //     throw new AppError("Note not found", 404);
-        // }
-
-        // if (note.author.toString() !== userId.toString()) {
-        //     throw new AppError("You have no permission to this note", 403);
-        // }
 
             return note
         }
